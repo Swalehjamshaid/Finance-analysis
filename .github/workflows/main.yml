@@ -1,1 +1,33 @@
+name: Build EXE
 
+on:
+  push:
+    branches: [ "main" ]   # Run when you push to main branch
+  workflow_dispatch:        # Allow manual run
+
+jobs:
+  build:
+    runs-on: windows-latest   # Use Windows runner
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'   # Or your preferred version
+
+    - name: Install dependencies
+      run: |
+        pip install pyinstaller
+        pip install -r requirements.txt || echo "No requirements.txt found"
+
+    - name: Build EXE
+      run: pyinstaller --onefile "app41(4).py"
+
+    - name: Upload EXE as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Finance-App
+        path: dist/*.ex
